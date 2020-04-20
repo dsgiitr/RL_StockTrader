@@ -14,20 +14,21 @@ def train_dqn(env, Q, Q_new, LR, balance):
     balance_start = balance 
     loss_function = nn.MSELoss() 
     optimizer = optim.Adam(list(Q.parameters()), lr=LR)    
-    epoch_num = 200
+    epoch_num = 500
     step_max = len(env.data)
-    memory_size = 500
-    batch_size = 100
+    memory_size = 5000
+    batch_size = 500
     memory = []
     total_step = 0
     total_rewards = []
     total_losses = []
+    epochs = []
     epsilon = 1.0
-    epsilon_decrease = 5e-6
+    epsilon_decrease = 1e-9
     epsilon_min = 0.01
     start_reduce_epsilon = 20000
-    train_freq = 100
-    update_q_freq = 500
+    train_freq = 10
+    update_q_freq = 5000
     gamma = 0.997
     epoch = 0
     
@@ -97,10 +98,10 @@ def train_dqn(env, Q, Q_new, LR, balance):
                 state = state_n
                 total_rewards.append(total_reward)
                 total_losses.append(total_loss)
+                epochs.append(epoch)
 
                 print("Epoch:", epoch, "Epsilon:", epsilon, "Step:", step, "Reward:", total_reward, "Total Balance:", balance)
-                
-                
+
             step += 1
             total_step += 1
             
@@ -109,4 +110,4 @@ def train_dqn(env, Q, Q_new, LR, balance):
             save(epoch, Q, optimizer)
             print("file saved")
            
-    return Q, total_losses, total_rewards
+    return Q, total_losses, total_rewards, epochs
