@@ -31,7 +31,7 @@ class Environment:
         else:
             stock_t_ = self.data.iloc[(self.t - 1), :]['C']
         interest_b = 0.1 # interest on borrow
-        balance_lim = 400000000
+        balance_lim = 200000000
         
         def findNSE(i, i_n): # finds when stock price falls within the given period
             k = i
@@ -115,5 +115,10 @@ class Environment:
             self.position_value += ((2*((self.position_trace[k]-min(self.position_trace))/(max(self.position_trace)-min(self.position_trace)+1)))-1)/(len(self.positions))
         self.history.pop(self.history_t-1)
         self.history.insert(0, stock_t - stock_t_)
+        
+        if reward > 0:
+            reward = 1
+        elif reward < 0:
+            reward = -1
 
         return [self.position_value] + self.history, reward, self.done, self.profits, self.balance
